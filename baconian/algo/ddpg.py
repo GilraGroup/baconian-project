@@ -83,7 +83,7 @@ class DDPG(ModelFreeAlgo, OffPolicyAlgo, MultiPlaceholderInput):
             self.reward_input = tf.placeholder(shape=[None, 1], dtype=tf.float32)
             self.next_state_input = tf.placeholder(shape=[None, self.env_spec.flat_obs_dim], dtype=tf.float32)
             self.done_input = tf.placeholder(shape=[None, 1], dtype=tf.bool)
-            self.target_q_input = tf.placeholder(shape=[None, 1], dtype=tf.float32)
+            self.target_q_input = tf.placeholder(shape=[None, self.env_spec.flat_action_dim], dtype=tf.float32)
             done = tf.cast(self.done_input, dtype=tf.float32)
             self.predict_q_value = (1. - done) * self.config('GAMMA') * self.target_q_input + self.reward_input
             with tf.variable_scope('train'):
@@ -133,7 +133,7 @@ class DDPG(ModelFreeAlgo, OffPolicyAlgo, MultiPlaceholderInput):
             train_batch = self.replay_buffer.sample(
                 batch_size=self.parameters('BATCH_SIZE')) if batch_data is None else batch_data
             assert isinstance(train_batch, TransitionData)
-
+            #print(train_batch.action_set)
             critic_loss, _ = self._critic_train(train_batch, tf_sess)
 
             actor_loss, _ = self._actor_train(train_batch, tf_sess)
@@ -153,9 +153,11 @@ class DDPG(ModelFreeAlgo, OffPolicyAlgo, MultiPlaceholderInput):
                 self.target_actor.state_input: batch_data.new_state_set
             }
         )
+        #print(self.parameters.return_tf_parameter_feed_dict())
         loss, _, grads = sess.run(
             [self.critic_loss, self.critic_update_op, self.critic_grads
              ],
+
             feed_dict={
                 self.target_q_input: target_q,
                 self.critic.state_input: batch_data.state_set,

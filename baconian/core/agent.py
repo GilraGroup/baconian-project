@@ -119,6 +119,7 @@ class Agent(Basic):
                           sample_type='trajectory',
                           store_flag=False,
                           in_which_status='TEST')
+        #print("Trajectory:", self.env._gym_env.env.trajectory_data)
         return res
 
     @register_counter_info_to_status_decorator(increment=1, info_key='predict_counter', under_status=('TRAIN', 'TEST'),

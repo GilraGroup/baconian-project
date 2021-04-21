@@ -88,9 +88,9 @@ class DynamicsModel(Basic):
         if self.env_spec.action_space.contains(action) is False:
             raise StateOrActionOutOfBoundError(
                 'action {} out of bound of {}'.format(action, self.env_spec.action_space.bound()))
-        if self.env_spec.obs_space.contains(state) is False:
-            raise StateOrActionOutOfBoundError(
-                'state {} out of bound of {}'.format(state, self.env_spec.obs_space.bound()))
+        # if self.env_spec.obs_space.contains(state) is False:
+        #     raise StateOrActionOutOfBoundError(
+        #         'state {} out of bound of {}'.format(state, self.env_spec.obs_space.bound()))
         new_state = self._state_transit(state=state, action=self.env_spec.flat_action(action),
                                         **kwargs_for_transit)
         if allow_clip is True:
@@ -141,7 +141,7 @@ class DynamicsModel(Basic):
         :rtype: np.ndarray
         """
         if state is not None:
-            assert self.env_spec.obs_space.contains(state)
+            #assert self.env_spec.obs_space.contains(state)
             self.state = state
         else:
             self.state = self.env_spec.obs_space.sample()

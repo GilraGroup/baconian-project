@@ -97,17 +97,24 @@ class Experiment(Basic):
         self.env.init()
         self.set_status('INITED')
 
-    def run(self):
+
+
+    def run(self, load_model):
         """ Run the experiment, and set status to 'RUNNING'."""
         GlobalConfig().freeze()
         self.init()
+        if load_model:
+            self.agent.algo.load(global_step=0, sess=tf.get_default_session(), path_to_model='/home/eia17mdw/HR_baconian_examples_S2/benchmark_log/arm-extrahard-v0/dyna/2021-04-20_00-10-17/exp_0/model_checkpoints/', model_name='Dyna_Test') ###
         self.set_status('RUNNING')
         res = self.flow.launch()
         if res is False:
             self.set_status('CORRUPTED')
         else:
             self.set_status('FINISHED')
+        if not load_model:
+            self.agent.algo.save(global_step=0, sess=tf.get_default_session()) ###
         self._exit()
+
 
     def _exit(self):
         """ Exit the experiment, reset global configurations and logging module."""

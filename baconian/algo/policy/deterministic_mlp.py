@@ -22,6 +22,8 @@ class DeterministicMLPPolicy(DeterministicPolicy, PlaceholderInput):
         DeterministicPolicy.__init__(self, env_spec=env_spec, name=name, parameters=None)
         obs_dim = env_spec.flat_obs_dim
         action_dim = env_spec.flat_action_dim
+        print(mlp_config[-1]['N_UNITS'])
+        print(action_dim)
         assert action_dim == mlp_config[-1]['N_UNITS']
 
         with tf.variable_scope(name_scope):

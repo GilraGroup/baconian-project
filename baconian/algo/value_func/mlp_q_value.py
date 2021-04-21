@@ -37,6 +37,10 @@ class MLPQValueFunction(QValueFunction, PlaceholderInput):
                 shape=[None, env_spec.flat_obs_dim],
                 dtype=tf.float32,
                 name='state_ph')
+            print("env_spec_flat_action")
+            print(env_spec.flat_action_dim)
+            print("env_spec_obs_action")
+            print(env_spec.flat_obs_dim)
             action_input = action_input if action_input is not None else tf.placeholder(
                 shape=[None, env_spec.flat_action_dim],
                 dtype=tf.float32,

@@ -2,8 +2,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import json
 import seaborn as sns
-
-sns.set_style('whitegrid')
+# from scipy.signal import lfilter ##
 
 
 class Plotter(object):
@@ -30,21 +29,25 @@ class Plotter(object):
                   'darkslateblue', 'lightcoral', 'rosybrown', 'fuchsia', 'peachpuff']
 
     def plot_fig(self, fig_num, col_id, x, y, title, x_label, y_label, label=' ', marker='*'):
+        sns.set_style('whitegrid')
         plt.figure(fig_num, figsize=(6, 5))
         plt.title(title)
         plt.xlabel(x_label)
         plt.ylabel(y_label)
-        #plt.yscale("log")
+        plt.yscale("log")
         plt.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
         plt.tight_layout()
 
         marker_every = max(int(len(x) / 10), 1)
         if len(np.array(y).shape) > 1:
-            new_shape = np.array(y).shape
-
+            # new_shape = np.array(y).shape
+            # n = 15  # the larger n is, the smoother curve will be
+            # b = [1.0 / n] * n
+            # a = 1
             res = np.reshape(np.reshape(np.array([y]), newshape=[-1]), newshape=[new_shape[1], new_shape[0]],
                              order='F').tolist()
             res = list(res)
+            # res = lfilter(b,a,res)
             for i in range(len(res)):
                 res_i = res[i]
                 plt.subplot(len(res), 1, i + 1)
@@ -53,6 +56,10 @@ class Plotter(object):
                          markevery=marker_every, markersize=6, linewidth=1)
                 col_id += 1
         else:
+            # n = 15  # the larger n is, the smoother curve will be
+            # b = [1.0 / n] * n
+            # a = 1
+            # y = lfilter(b,a,res)
             plt.plot(x, y, self.color_list[col_id], label=label, marker=marker, markevery=marker_every, markersize=6,
                      linewidth=1)
         plt.legend()
@@ -116,11 +123,12 @@ class Plotter(object):
         if histogram_flag is not True:
             plt.xlabel(index)
             plt.ylabel(key)
-            #plt.yscale("log")
+            plt.yscale("log")
+
         else:
             plt.xlabel(key)
             plt.ylabel('count')
-            #plt.yscale("log")
+            plt.yscale("log")
         plt.legend()
         # Save the figure to a file to a path or paths in a list
         if save_flag is True:
@@ -152,7 +160,7 @@ class Plotter(object):
         plt.title("%s_%s_%s" % (res_name, file_name, key))
         plt.xlabel('index')
         plt.ylabel(key)
-        #plt.yscale("log")
+        plt.yscale("log")
         for i in range(len(path_list)):
             test_reward = []
             real_env_sample_count_index = []
@@ -187,6 +195,10 @@ class Plotter(object):
             x_keys.append(last_key)
             y_values.append(last_set)
             y_values_mean = [np.mean(y_values[j]) for j in range(len(y_values))]
+            # n = 15  # the larger n is, the smoother curve will be
+            # b = [1.0 / n] * n
+            # a = 1
+            # y_values_mean = lfilter(b,a,y_values_mean)
             if scatter_flag is True:
                 plt.scatter(x_keys, y_values_mean, c=Plotter.color_list[i], label=key + label + str(i),
                             marker=Plotter.markers[i])
